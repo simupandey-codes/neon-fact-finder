@@ -12,28 +12,25 @@ const NAV = [
 ] as const;
 
 export function SiteHeader() {
-  const [light, setLight] = useState(false);
+  const [dark, setDark] = useState(false);
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
 
   useEffect(() => {
     const root = document.documentElement;
-    if (light) root.classList.add("light");
-    else root.classList.remove("light");
-  }, [light]);
+    if (dark) root.classList.add("dark");
+    else root.classList.remove("dark");
+  }, [dark]);
 
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 glass-strong border-b">
+    <header className="sticky top-0 z-50 glass-strong">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="relative">
-            <Shield className="size-7 text-[color:var(--neon)] group-hover:scale-110 transition-transform" />
-            <div className="absolute inset-0 blur-md bg-[color:var(--neon)] opacity-50 -z-10" />
-          </div>
-          <span className="font-bold text-lg tracking-tight">
-            Truth<span className="text-gradient">Lens</span> AI
+        <Link to="/" className="flex items-center gap-2">
+          <Shield className="size-6 text-primary" />
+          <span className="font-semibold text-base tracking-tight text-foreground">
+            TruthLens <span className="text-muted-foreground font-normal">AI</span>
           </span>
         </Link>
 
@@ -44,10 +41,10 @@ export function SiteHeader() {
               <Link
                 key={n.to}
                 to={n.to}
-                className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                   active
-                    ? "text-foreground bg-[color:color-mix(in_oklab,var(--neon)_15%,transparent)]"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-primary bg-accent"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 {n.label}
@@ -56,9 +53,9 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setLight((v) => !v)} aria-label="Toggle theme">
-            {light ? <Moon className="size-5" /> : <Sun className="size-5" />}
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" onClick={() => setDark((v) => !v)} aria-label="Toggle theme">
+            {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
           </Button>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen((v) => !v)} aria-label="Menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -66,7 +63,7 @@ export function SiteHeader() {
         </div>
       </div>
       {open && (
-        <nav className="md:hidden border-t px-4 py-3 flex flex-col gap-1 animate-fade-in">
+        <nav className="md:hidden border-t px-4 py-3 flex flex-col gap-1 animate-fade-in bg-card">
           {NAV.map((n) => (
             <Link key={n.to} to={n.to} className="px-3 py-2 rounded-md hover:bg-secondary text-sm">
               {n.label}
@@ -80,7 +77,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t mt-20">
+    <footer className="border-t mt-20 bg-card">
       <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} TruthLens AI · Student Project Prototype</p>
         <p>Built with React, TanStack Start & Tailwind</p>
