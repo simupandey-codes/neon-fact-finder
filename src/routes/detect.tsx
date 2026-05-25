@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { analyzeText, SAMPLE_ARTICLES, type AnalysisResult } from "@/lib/mockAi";
+import { analyzeWithAI } from "@/lib/analyze.functions";
 import { saveResult, getHistory } from "@/lib/history";
 import {
   AlertTriangle, CheckCircle2, XCircle, Loader2, Image as ImageIcon, Mic, Share2, Sparkles, Trash2, History,
