@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { analyzeText, SAMPLE_ARTICLES, type AnalysisResult } from "@/lib/mockAi";
+import { analyzeWithAI } from "@/lib/analyze.functions";
 import { saveResult, getHistory } from "@/lib/history";
 import {
   AlertTriangle, CheckCircle2, XCircle, Loader2, Image as ImageIcon, Mic, Share2, Sparkles, Trash2, History,
@@ -35,6 +37,8 @@ function DetectPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
 
+  const callAI = useServerFn(analyzeWithAI);
+
   useEffect(() => {
     setHistory(getHistory());
     const sync = () => setHistory(getHistory());
@@ -49,8 +53,22 @@ function DetectPage() {
     }
     setLoading(true);
     setResult(null);
+    const input = text.trim();
     try {
-      const r = await analyzeText(text.trim());
+      let r: AnalysisResult;
+      try {
+        const ai = await callAI({ data: { text: input } });
+        r = {
+          id: crypto.randomUUID(),
+          text: input,
+          createdAt: Date.now(),
+          ...ai,
+        };
+      } catch (err) {
+        console.error("AI failed, using local fallback", err);
+        toast.warning("AI unavailable — using local analysis");
+        r = await analyzeText(input);
+      }
       setResult(r);
       saveResult(r);
     } finally {
