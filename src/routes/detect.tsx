@@ -36,8 +36,6 @@ function DetectPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  const callAI = useServerFn(analyzeWithAI);
-
   useEffect(() => {
     setHistory(getHistory());
     const sync = () => setHistory(getHistory());
@@ -54,25 +52,13 @@ function DetectPage() {
     setResult(null);
     const input = text.trim();
     try {
-      let r: AnalysisResult;
-      try {
-        const ai = await callAI({ data: { text: input } });
-        r = {
-          id: crypto.randomUUID(),
-          text: input,
-          createdAt: Date.now(),
-          ...ai,
-        };
-      } catch (err) {
-        console.error("AI failed, using local fallback", err);
-        toast.warning("AI unavailable — using local analysis");
-        r = await analyzeText(input);
-      }
+      const r = await analyzeText(input);
       setResult(r);
       saveResult(r);
     } finally {
       setLoading(false);
     }
+
   };
 
   const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
